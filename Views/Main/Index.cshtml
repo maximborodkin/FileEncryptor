@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <div>
                             <label for="update-text" class="form-label">Исходный текст</label>
-                            @Html.TextAreaFor(model => model.Text, new { @id = "update-text", @class = "form-control", @rows = 10, @oninput = "validateForm(this)", @required="required" })
+                            @Html.TextAreaFor(model => model.Text, new { @id = "update-text", @class = "form-control", @rows = 10, @oninput = "validateForm(this)", @required = "required" })
                         </div>
                         <div>
                             <label for="update-key" class="form-label">Ключ</label>
@@ -44,7 +44,9 @@
                 {
                     <input type="file" name="file" id="fileUpload-file" class="form-control form-control-file" accept=".txt,.doc,.docx" onchange="validateForm(this)" required="required">
                     @Html.HiddenFor(model => model.Key, new { @id = "fileUpload-key" })
-                    @Html.HiddenFor(model => model.IsEncrypted, new { @id = "fileUpload-isEncrypted" })
+                    @*@Html.HiddenFor(model => model.IsEncrypted, new { @id = "fileUpload-isEncrypted" })*@
+                    @Html.EditorFor(model => model.IsEncrypted, new { htmlAttributes = new { @id = "fileUpload-isEncrypted", @class = "custom-control-input hidden" } })
+
                     <input type="submit" class="btn btn-primary form-control" id="fileUpload-submit" value="Загрузить файл" />
                 }
 

@@ -8,13 +8,15 @@ const validationAlert = document.getElementById('validation-alert');
 const updateSubmit = document.getElementById('update-submit');
 const fileUploadSubmit = document.getElementById('fileUpload-submit');
 
+fileUploadKey.value = updateKey.value;
 updateKey.addEventListener('change', (event) => {
     fileUploadKey.value = updateKey.value;
 });
 
+fileUploadIsEncrypted.checked = updateIsEncrypted.checked;
 updateIsEncrypted.addEventListener('change', (event) => {
-    fileUploadIsEncrypted.value = updateIsEncrypted.value;
-    console.log(fileUploadIsEncrypted.value)
+    fileUploadIsEncrypted.checked = updateIsEncrypted.checked;
+    console.log(updateIsEncrypted.checked);
 });
 
 validateForm();
@@ -32,7 +34,7 @@ function validateFile(fileName) {
 
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
-        if(allowed_extensions[i]==file_extension) return true;
+        if(allowed_extensions[i] == file_extension) return true;
     }
     return false;
 }
