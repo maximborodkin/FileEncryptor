@@ -14,11 +14,13 @@ namespace FileEncryptor
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSession();
             services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSession();
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();

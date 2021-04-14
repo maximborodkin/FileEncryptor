@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+    <header class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">Шифр Виженера онлайн</span>
+    </header>
+    <div class="container ">        
+        <div class="row">
+            <div class="col-6">
+                @using (Html.BeginForm("Update", "Main", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        <div>
+                            <label for="update-text" class="form-label">Исходный текст</label>
+                            @Html.TextAreaFor(model => model.Text, new { @id = "update-text", @class = "form-control", @rows = 10, @oninput="validateForm(this)" @required })
+                        </div>
+                        <div>
+                            <label for="update-key" class="form-label">Ключ</label>
+                            @Html.EditorFor(model => model.Key, new { htmlAttributes = new { @id = "update-key", @class = "form-control text-box single-line" @maxlength="250" @oninput="validateForm(this)" @required } })
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            @Html.EditorFor(model => model.IsEncrypted, new { htmlAttributes = new { @id = "update-isEncrypted", @class = "custom-control-input" } })
+                            <label class="custom-control-label" for="update-isEncrypted">Текст зашифрован</label>
+                        </div>
+                        <input type="submit" class="btn btn-success form-control" id="update-submit" value="Сгенерировать" />
+                    </div>
+                }
+
+                @using (Html.BeginForm("FileUpload", "Main", FormMethod.Post, new { enctype = "multipart/form-data", @class="form-inline" }))
+                {
+                    <input type="file" name="file" id="fileUpload-file" class="form-control form-control-file" accept=".txt,.doc,.docx" onchange="validateForm(this)" required>
+                    @Html.HiddenFor(model => model.Key, new { @id = "fileUpload-key" })
+                    @Html.HiddenFor(model => model.IsEncrypted, new { @id = "fileUpload-isEncrypted" })
+                    <input type="submit" class="btn btn-primary form-control" id="fileUpload-submit"  value="Расшифровать файл"/>
+                }
+            </div>
+            <div class="col-6">
+                <label for="generated-text">Результат</label>
+                <div class="card" id="generated-text">
+                  <div class="card-body">
+                    encrypted text here
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning alert-dismissible fade show" id="validation-alert" role="alert">
+            Validation message
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="lib/jquery/js/jquery.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

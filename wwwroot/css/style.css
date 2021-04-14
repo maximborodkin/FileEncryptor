@@ -1,1 +1,16 @@
-﻿
+﻿#update-text {
+	resize: none;
+}
+
+#update-key {
+	resize: none;
+}
+
+#validation-alert {
+	margin-top: 24pt;
+}
+
+.secription {
+	margin-top: 16pt;
+	margin-bottom: 16pt;
+}
