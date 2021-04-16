@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="~/res/favicon.ico">
 </head>
 <body>
+
     <header class="navbar navbar-light bg-light">
         <span class="navbar-brand mb-0 h1">Шифр Виженера онлайн</span>
     </header>
@@ -16,7 +17,7 @@
         <div class="row">
             <div class="row ">
                 <span class="description">
-                    Для расшифровки предоставьте ключ шифра, укажите, выберете направление шифрования (зашифровать/расшифровать) и текст одним из двух способов: вставив его в поле или загрузив в файле. 
+                    Для расшифровки предоставьте ключ шифра, выберете направление шифрования (зашифровать/расшифровать) и предоставьте текст одним из двух способов: вставив его в поле или загрузив в файле.
                 </span>
             </div>
             <div class="col-6">
@@ -26,11 +27,11 @@
                     <div class="form-group">
                         <div>
                             <label for="update-text" class="form-label">Исходный текст</label>
-                            @Html.TextAreaFor(model => model.Text, new { @id = "update-text", @class = "form-control", @rows = 10, @oninput = "validateForm(this)", @required = "required" })
+                            @Html.TextAreaFor(model => model.Text, new { @id = "update-text", @class = "form-control", @rows = 10, @oninput = "updateButtonsState()", @required = "required" })
                         </div>
                         <div>
                             <label for="update-key" class="form-label">Ключ</label>
-                            @Html.EditorFor(model => model.Key, new { htmlAttributes = new { @id = "update-key", @class = "form-control text-box single-line", @maxlength = "250", @oninput = "validateForm(this)", @required = "required" } })
+                            @Html.EditorFor(model => model.Key, new { htmlAttributes = new { @id = "update-key", @class = "form-control text-box single-line", @maxlength = "250", @oninput = "updateButtonsState()", @required = "required" } })
                         </div>
                         <div class="custom-control custom-checkbox">
                             @Html.EditorFor(model => model.IsEncrypted, new { htmlAttributes = new { @id = "update-isEncrypted", @class = "custom-control-input" } })
@@ -40,11 +41,10 @@
                     </div>
                 }
 
-                @using (Html.BeginForm("FileUpload", "Main", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-inline" }))
+                @using (Html.BeginForm("FileUpload", "Main", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-inline input-group" }))
                 {
-                    <input type="file" name="file" id="fileUpload-file" class="form-control form-control-file" accept=".txt,.doc,.docx" onchange="validateForm(this)" required="required">
+                    <input type="file" name="file" id="fileUpload-file" class="form-control form-control-file w-50" accept=".txt,.docx" onchange="updateButtonsState()" required="required">
                     @Html.HiddenFor(model => model.Key, new { @id = "fileUpload-key" })
-                    @*@Html.HiddenFor(model => model.IsEncrypted, new { @id = "fileUpload-isEncrypted" })*@
                     @Html.EditorFor(model => model.IsEncrypted, new { htmlAttributes = new { @id = "fileUpload-isEncrypted", @class = "custom-control-input hidden" } })
 
                     <input type="submit" class="btn btn-primary form-control" id="fileUpload-submit" value="Загрузить файл" />
@@ -55,26 +55,35 @@
                 <label for="generated-text">Результат</label>
                 <div class="card" id="generated-text">
                     <div class="card-body">
-                        @if(Model != null)
+                        @if (Model != null)
                         {
-                            @Model.GetGeneratedText()
+                            @Model.Result;
+                        }
+                        else
+                        {
+                            <span class="text-muted">здесь появится результат преобразования</span>
                         }
                     </div>
                 </div>
+                @if (Model != null && !string.IsNullOrEmpty(Model.Result))
+                {
+                    @using (Html.BeginForm(FormMethod.Post, new { @class = "form-inline" }))
+                    {
+                        @Html.HiddenFor(model => model.Text)
+                        @Html.HiddenFor(model => model.Key)
+                        @Html.HiddenFor(model => model.IsEncrypted)
+                        @Html.HiddenFor(model => model.Result)
+                        <input asp-controller="Main" asp-action="DownloadTXT" type="submit" class="btn btn-primary form-control" value="Скачать txt" />
+                        <input asp-controller="Main" asp-action="DownloadDOCX" type="submit" class="btn btn-primary form-control" value="Скачать docx" />
+                    }
+                }
             </div>
         </div>
 
-            @if(Model != null && !Model.IsValid())
+            @if(Model != null && Model.ErrorMessage != null)
             {
                 <div class="alert alert-warning alert-dismissible fade show" id="validation-alert" role="alert" )>
-                    @if (Model.Key == null)
-                    {
-                        <span>Необходим исходный текст</span>
-                    }
-                    @if (Model.Key == null)
-                    {
-                        <span>Необходим ключ</span>
-                    }
+                    @Model.ErrorMessage
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

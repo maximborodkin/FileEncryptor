@@ -19,17 +19,27 @@ updateIsEncrypted.addEventListener('change', (event) => {
     console.log(updateIsEncrypted.checked);
 });
 
-validateForm();
-
 // disable buttons if required fields are empty or has invalid data
-function validateForm(e) {
-	fileUploadSubmit.disabled = updateKey.value == null || updateKey.value.trim().length == 0 || !validateFile(fileUploadFile.value);
-	updateSubmit.disabled = updateText.value == null || updateText.value.trim().length == 0 || updateKey.value == null || updateKey.value.trim().length == 0;
+function updateButtonsState() {
+    fileUploadSubmit.disabled = !validateKey(updateKey.value) || !validateFile(fileUploadFile.value);
+    updateSubmit.disabled = !validateText(updateText.value) || !validateKey(updateKey.value);
 }
 
+// is text not empty
+function validateText(text) {
+    return text != null && text.trim().length > 0;
+}
+
+// is key not empty and contains only cyrillic characters
+function validateKey(key) {
+    console.log(/^[а-яА-ЯЁё]+$/.test(key));
+    return key != null && key.trim().length > 0 && /^[а-яА-ЯЁё]+$/.test(key);
+}
+
+// is file not empty and has valid extension
 function validateFile(fileName) {
 	if (fileName == null || fileName.trim().length == 0) return false;
-	var allowed_extensions = new Array("txt","doc","docx");
+	var allowed_extensions = new Array("txt","docx");
     var file_extension = fileName.split('.').pop().toLowerCase();
 
     for(var i = 0; i <= allowed_extensions.length; i++)
@@ -38,3 +48,5 @@ function validateFile(fileName) {
     }
     return false;
 }
+
+updateButtonsState();

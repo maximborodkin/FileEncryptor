@@ -11,39 +11,65 @@ namespace FileEncryptor.Models
     {
         public EncryptionViewModel() { }
 
-        public EncryptionViewModel(string text, string key, bool isEncrypted)
+        public EncryptionViewModel(string text, string key, bool isEncrypted, string errorMessage = null)
         {
             Text = text;
             Key = key;
             IsEncrypted = isEncrypted;
+            ErrorMessage = errorMessage;
         }
 
-        [Required(ErrorMessage = "Необхдим исходный текст")]
+        [Required]
         public string Text { get; set; }
        
-        [Required(ErrorMessage = "Необхдим ключ")]
+        [Required]
         public string Key { get; set; }
         
         [Required]
         public bool IsEncrypted { get; set; }
 
-        private static readonly List<char> alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя".ToCharArray().ToList(); 
+        private string result;
+        public string Result {
+            get 
+            { 
+                if (result == null)
+                {
+                    result = GetGeneratedText();
+                }
+                return result;
+            }
+            set => result = value;
+        }
 
-        // not working
-        private string EncryptText()
+        public string ErrorMessage { get; set; }
+        public const string emptyTextError = "Необхдим исходный текст";
+        public const string emptyKeyError = "Необхдим ключ";
+        public const string keyCharactersError = "Ключ должен состоять из букв кириллического алфавита";
+        public const string cipherError = "Во время преобразования возникла ошибка";
+        public const string emptyFileError = "Необходим непустой файл";
+        public const string fileReadingError = "Ошибка чтения из файла";
+        public const string fileExtensionError = "Неподдерживаемый формат файла";
+        public const string generateFileError = "Ошибка при создании файла";
+
+        private static readonly List<char> alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя".ToCharArray().ToList();
+
+        private string GetGeneratedText()
         {
-            var encryption = new StringBuilder();
+            if (!Validate()) return null;
             try
             {
+                var encryption = new StringBuilder();
                 int keyIndex = 0;
                 foreach (char oldChar in Text)
                 {
-                    if (alphabet.Contains(oldChar))
+                    if (alphabet.Contains(char.ToLower(oldChar)))
                     {
                         if (keyIndex == Key.Length) keyIndex = 0;
-                        int offset = alphabet.IndexOf(Key[keyIndex++]);
-                        int oldCharIndex = alphabet.IndexOf(oldChar);
-                        int newCharIndex = oldCharIndex + offset % alphabet.Count;
+                        int offset = alphabet.IndexOf(char.ToLower(Key[keyIndex++]));
+                        int oldCharIndex = alphabet.IndexOf(char.ToLower(oldChar));
+                        int newCharIndex = 
+                            IsEncrypted ? (oldCharIndex - offset < 0 ? alphabet.Count + (oldCharIndex - offset) : oldCharIndex - offset)
+                            : ((oldCharIndex + offset) % alphabet.Count);
                         char newChar = char.IsLower(oldChar) ? alphabet[newCharIndex] : char.ToUpper(alphabet[newCharIndex]);
                         encryption.Append(newChar);
                     }
@@ -52,46 +78,35 @@ namespace FileEncryptor.Models
                         encryption.Append(oldChar);
                     }
                 }
+                return encryption.ToString();
             }
             catch (Exception)
             {
-                //return "Во время преобразования возникла ошибка";
+                ErrorMessage = cipherError;
+                return string.Empty;
             }
-            return encryption.ToString();
         }
 
-        private string DecryptText()
+        public bool Validate()
         {
-            var decryption = new StringBuilder();
-            try
+            if (ErrorMessage != null) return false;
+
+            if(Text == null || Text.Trim().Length == 0)
             {
-                int keyIndex = 0;
-                foreach (char oldChar in Text)
-                {
-                    if (alphabet.Contains(oldChar))
-                    {
-                        if (keyIndex == Key.Length) keyIndex = 0;
-                        int offset = alphabet.IndexOf(Key[keyIndex++]);
-                        int oldCharIndex = alphabet.IndexOf(oldChar);
-                        int newCharIndex = oldCharIndex - offset < 0 ? alphabet.Count + (oldCharIndex - offset) : oldCharIndex - offset;
-                        char newChar = char.IsLower(oldChar) ? alphabet[newCharIndex] : char.ToUpper(alphabet[newCharIndex]);
-                        decryption.Append(newChar);
-                    }
-                    else
-                    {
-                        decryption.Append(oldChar);
-                    }
-                }
-            }
-            catch (Exception)
+                ErrorMessage = emptyTextError;
+                return false;
+            } else if(Key == null || Key.Trim().Length == 0)
             {
-                return "Во время преобразования возникла ошибка";
+                ErrorMessage = emptyKeyError;
+                return false;
+            } else if (!Key.All(c => alphabet.Contains(char.ToLower(c))))
+            {
+                ErrorMessage = keyCharactersError;
+                return false;
+            } else
+            {
+                return true;
             }
-            return decryption.ToString();
         }
-
-        public string GetGeneratedText() => IsEncrypted ? DecryptText() : EncryptText();
-
-        public bool IsValid() => !string.IsNullOrEmpty(Text) && !string.IsNullOrEmpty(Key);
     }
 }
