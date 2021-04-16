@@ -8,6 +8,7 @@ const validationAlert = document.getElementById('validation-alert');
 const updateSubmit = document.getElementById('update-submit');
 const fileUploadSubmit = document.getElementById('fileUpload-submit');
 
+// set values from original inputs to hidden inputs in file upload form
 fileUploadKey.value = updateKey.value;
 updateKey.addEventListener('change', (event) => {
     fileUploadKey.value = updateKey.value;

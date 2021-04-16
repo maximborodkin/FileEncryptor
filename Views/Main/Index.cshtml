@@ -9,7 +9,6 @@
     <link rel="icon" type="image/x-icon" href="~/res/favicon.ico">
 </head>
 <body>
-
     <header class="navbar navbar-light bg-light">
         <span class="navbar-brand mb-0 h1">Шифр Виженера онлайн</span>
     </header>
@@ -21,7 +20,6 @@
                 </span>
             </div>
             <div class="col-6">
-
                 @using (Html.BeginForm("Update", "Main", FormMethod.Post))
                 {
                     <div class="form-group">
@@ -40,16 +38,15 @@
                         <input type="submit" class="btn btn-success form-control" id="update-submit" value="Сгенерировать" />
                     </div>
                 }
-
                 @using (Html.BeginForm("FileUpload", "Main", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-inline input-group" }))
                 {
-                    <input type="file" name="file" id="fileUpload-file" class="form-control form-control-file w-50" accept=".txt,.docx" onchange="updateButtonsState()" required="required">
+                    <div class="custom-file border border-primary rounded-left file-input">
+                        <input type="file" name="file" id="fileUpload-file" accept=".txt,.docx" onchange="updateButtonsState()" required="required">
+                    </div>
                     @Html.HiddenFor(model => model.Key, new { @id = "fileUpload-key" })
                     @Html.EditorFor(model => model.IsEncrypted, new { htmlAttributes = new { @id = "fileUpload-isEncrypted", @class = "custom-control-input hidden" } })
-
-                    <input type="submit" class="btn btn-primary form-control" id="fileUpload-submit" value="Загрузить файл" />
+                    <input type="submit" class="btn btn-primary" id="fileUpload-submit" value="Загрузить файл" />
                 }
-
             </div>
             <div class="col-6">
                 <label for="generated-text">Результат</label>
@@ -79,7 +76,6 @@
                 }
             </div>
         </div>
-
             @if(Model != null && Model.ErrorMessage != null)
             {
                 <div class="alert alert-warning alert-dismissible fade show" id="validation-alert" role="alert" )>
@@ -89,9 +85,7 @@
                     </button>
                 </div>
             }
-
     </div>
-
     <script src="~/lib/jquery/js/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/js/script.js"></script>

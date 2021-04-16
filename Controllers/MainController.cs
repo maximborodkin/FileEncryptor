@@ -3,21 +3,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using DocumentFormat.OpenXml;
 using System.Text;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace FileEncryptor.Controllers
 {
     public class MainController : Controller
     {
-        private EncryptionViewModel m = new EncryptionViewModel("бщцфаирщри, бл ячъбиуъ щбюэсяёш гфуаа!!! у ъящэячэц ъэюоык, едщ бдв саэацкшгнбяр гчеа кчфцшубп цу ьгщпя вщвсящ, эвэчрысй юяуъщнщхо шпуъликугбз чъцшья с цощъвчщ ъфмес ю лгюлэ ёъяяр! с моыящш шпмоец щаярдш цяэубфъ аьгэотызуа дщ, щръ кй юцкъщчьуац уыхэцэ ясч юбюяуяг ыовзсгюамщщ.внютвж тхыч эядкъябе цн юкъль, мэсццогл шяьфыоэьь ть эщсщжнашанэ ыюцен, уёюяыцчан мах гъъьуун шпмоыъй ч яяьпщъхэтпык яущм бпйэае! чэьюмуд, оээ скфч саьбрвчёыа эядуцйт ъ уьгфщуяяёу фси а эацэтшцэч юпапёи, ьь уъубфмч ысь хффы ужц чьяцнааущ эгъщйаъф, ч п эиттпьк ярвчг гмубзньцы! щб ьшяо шачюрэсч FirstLineSoftware ц ешчтфщацдпбр шыыь, р ыоф ячцсвкрщве бттй а ядсецсцкюкх эшашёрэсуъ якжще увюгщр в# уфн ысвчюпжзцж! чй ёюычъ бщххыибй еьюхечр п хкъмэншёцч юятщвфцшчщ с хчю ъэ ч аачсюсчыщачрняун в шъюьэжцясиьццч агфуо ацаьяычсцы .Net, чэбф ыуюбпьщо с чыдпяхбцйг щктрж!", "скорпион", true);
         [HttpGet]
-        public IActionResult Index() => View(m);
+        public IActionResult Index() => View();
 
         [HttpPost]
         public IActionResult Update(EncryptionViewModel model) => model == null ? RedirectToAction("Index") : View("Index", model);
@@ -78,12 +74,10 @@ namespace FileEncryptor.Controllers
 
         public IActionResult DownloadTXT(EncryptionViewModel model)
         {
-            MemoryStream memoryStream = null;
-            StreamWriter streamWriter = null;
             try
             { 
-                memoryStream = new MemoryStream();
-                streamWriter = new StreamWriter(memoryStream);
+                var memoryStream = new MemoryStream();
+                var streamWriter = new StreamWriter(memoryStream);
 
                 streamWriter.Write(model.Result);
                 streamWriter.Flush();
@@ -95,11 +89,6 @@ namespace FileEncryptor.Controllers
             {
                 model.ErrorMessage = EncryptionViewModel.generateFileError;
                 return View("Index", model);
-            }
-            finally
-            {
-                memoryStream?.Close();
-                streamWriter?.Close();
             }
         }
 

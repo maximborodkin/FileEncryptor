@@ -2,15 +2,20 @@
 	resize: none;
 }
 
-#update-key {
-	resize: none;
+#update-isEncrypted{
+	margin-top: 24pt;
+	margin-bottom: 24pt;
 }
 
 #validation-alert {
 	margin-top: 24pt;
 }
 
-.secription {
+.file-input {
+	padding-left: .5rem;
+}
+
+.description {
 	margin-top: 16pt;
 	margin-bottom: 16pt;
 }
