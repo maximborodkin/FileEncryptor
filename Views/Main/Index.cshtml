@@ -62,7 +62,7 @@
                         }
                     </div>
                 </div>
-                @if (Model != null && !string.IsNullOrEmpty(Model.Result))
+                @if (Model != null && !string.IsNullOrEmpty(Model.Result) && Model.ErrorMessage == null)
                 {
                     @using (Html.BeginForm(FormMethod.Post, new { @class = "form-inline" }))
                     {
@@ -70,8 +70,8 @@
                         @Html.HiddenFor(model => model.Key)
                         @Html.HiddenFor(model => model.IsEncrypted)
                         @Html.HiddenFor(model => model.Result)
-                        <input asp-controller="Main" asp-action="DownloadTXT" type="submit" class="btn btn-primary form-control" value="Скачать txt" />
-                        <input asp-controller="Main" asp-action="DownloadDOCX" type="submit" class="btn btn-primary form-control" value="Скачать docx" />
+                        <input asp-controller="Main" asp-action="DownloadTXT" type="submit" class="btn btn-primary form-control btn-download" value="Скачать txt" />
+                        <input asp-controller="Main" asp-action="DownloadDOCX" type="submit" class="btn btn-primary form-control btn-download" value="Скачать docx" />
                     }
                 }
             </div>

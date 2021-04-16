@@ -9,6 +9,6 @@
 &NewLine;
 
 Технологии:
-- Сервер - ASP&#46;NET 5, C#, Razor
-- Клиент - HTML5, JS, CSS
+- Сервер -  C#, ASP&#46;NET 5, Razor
+- Клиент - HTML5, JS, CSS, Bootstrap 4
 - OpenXml для работы с docx
